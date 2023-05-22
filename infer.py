@@ -8,7 +8,6 @@ from transformers import GenerationConfig, LlamaForCausalLM, LlamaTokenizer
 
 from utils.prompter import Prompter
 
-if torch.cuda.is_available():
     device = "cuda"
 
 
@@ -60,7 +59,6 @@ def main(
     ):
         prompt = prompter.generate_prompt(instruction, input)
         inputs = tokenizer(prompt, return_tensors="pt")
-        input_ids = inputs["input_ids"].to(device)
         generation_config = GenerationConfig(
             temperature=temperature,
             top_p=top_p,
@@ -82,7 +80,6 @@ def main(
         return prompter.get_response(output)
 
     def infer_from_file():
-        with open(infer_data_path) as f:
             for line in f:
                 data = json.loads(line)
                 instruction = data["instruction"]
@@ -91,7 +88,6 @@ def main(
                 print(f"Base Model: {base_model}    Lora Weights: {lora_weights}")
                 print("Instruction:\n", instruction)
                 model_output = evaluate(instruction)
-                print("Model Output:\n", model_output)
                 print("Ground Truth:\n", output)
                 print('=' * 100)
 
